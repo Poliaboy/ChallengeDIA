@@ -1,7 +1,7 @@
 class Tic_Tac_Toe:
     def __init__(self, board=None, player="X", state=False, winner=0):
         if board is None:
-            self.board = [[" "]*3 for _ in range(3)]
+            self.board = [["O"]*3 for _ in range(3)]
         else:
             self.board = board
         self.player = player
@@ -65,4 +65,5 @@ class Tic_Tac_Toe:
 
     def __str__(self):
         return "\n".join(" ".join(cell for cell in row) for row in self.board)
+
 

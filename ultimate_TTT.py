@@ -69,7 +69,19 @@ class UltimateTTT:
     # X X X | X X X | X X X
     # X X X | X X X | X X X
     def __str__(self):
-        return " ".join("------+-------+------\n".join(" | ".join(" ".join(self.boardU[i][j].__str__()) for j in range(3)) for i in range(3)))
+        s = ""
+        for i in range(3):
+            for k in range(3):
+                for j in range(3):
+                    for l in range(3):
+                        s += self.boardU[i][j].board[k][l] + " "
+                    if j < 2:
+                        s += "| "
+                s += "\n"
+            s = s[:-2] + "\n"
+            if i < 2:
+                s += "------+-------+------\n"
+        return s
 
 
 
