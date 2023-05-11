@@ -1,7 +1,7 @@
 class Tic_Tac_Toe:
     def __init__(self, board=None, player="X", state=False, winner=0):
         if board is None:
-            self.board = [["O"]*3 for _ in range(3)]
+            self.board = [["-"]*3 for _ in range(3)]
         else:
             self.board = board
         self.player = player
@@ -12,7 +12,8 @@ class Tic_Tac_Toe:
         self.winner = self.utility()
         if self.winner != 0:
             self.state = True
-        self.state = all(cell != " " for row in self.board for cell in row)
+        else:
+            self.state = all(cell != "-" for row in self.board for cell in row)
 
     def utility(self):
         lines = [
@@ -37,14 +38,12 @@ class Tic_Tac_Toe:
         return 0
 
     def possible_actions(self):
-        return [(i, j) for i in range(3) for j in range(3) if self.board[i][j] == " "]
+        return [(i, j) for i in range(3) for j in range(3) if self.board[i][j] == "-"]
 
     # should not be used
     def player_turn(self, action):
         i, j = action
         self.board[i][j] = self.player
-        self.player = "O" if self.player == "X" else "X"
-        self.is_terminal()
 
     # if the grid is won by a player display the grid as a big X or O like this:
     #  \ /

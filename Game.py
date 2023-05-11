@@ -3,30 +3,47 @@ from ultimate_TTT import UltimateTTT
 
 
 def jouer():
+
     ultimate_ttt = UltimateTTT()
+    for i in range(3):
+        for j in range(3):
+            ultimate_ttt.boardU[i][j].is_terminal()
     while not ultimate_ttt.is_terminal():
         print(ultimate_ttt.__str__())
         print("C'est au joueur", ultimate_ttt.player, "de jouer.")
-        if ultimate_ttt.is_next_grid_full():
-            print("Choisissez une grille non complétée.")
-
-
-        print("Veuillez entrer les coordonnées de votre action sous forme i,j : ")
-        action = input()
-        i, j = action.split(",")
-        i, j = int(i), int(j)
-        if ultimate_ttt.boardU[i][j].winner == 0:
-            print("Case déjà remplie, choisissez une autre case.")
+        check = False
+        if ultimate_ttt.is_next_board_full():
+            while check is False:
+                print("Choisissez une grille non complétée.")
+                boardNb = int(input()) - 1
+                if ultimate_ttt.boardU[boardNb // 3][boardNb % 3].state:
+                    print("Cette grille est complétée.")
+                    continue
+                print("Choisissez une case non complétée (de 1 à 9).")
+                cell = int(input()) - 1
+                if divmod(cell,3) not in ultimate_ttt.boardU[boardNb // 3][boardNb % 3].possible_actions():
+                    print("Cette case est complétée.")
+                    continue
+                check = True
         else:
-            ultimate_ttt.play_on_all_grid(i, j)
-            ultimate_ttt.is_terminal()
-            ultimate_ttt.player = "X" if ultimate_ttt.player == "O" else "O"
-    print(ultimate_ttt)
-    if ultimate_ttt.winner == 0:
-        print("Match nul.")
-    else:
-        print("Le joueur", ultimate_ttt.winner, "a gagné.")
+            while check is False:
+                print("Vous pouvez jouer dans la grille", ultimate_ttt.next_board + 1)
+                boardNb = ultimate_ttt.next_board
+                print("Choisissez une case non complétée (de 1 à 9).")
+                cell = int(input()) - 1
+                if divmod(cell,3) not in ultimate_ttt.boardU[boardNb // 3][boardNb % 3].possible_actions():
+                    print("Cette case est complétée.")
+                    continue
+                check = True
+        ultimate_ttt.player_turn(boardNb, cell)
+        # winner
+        if ultimate_ttt.winner != 0:
+            print(ultimate_ttt.__str__())
+            print("Le joueur", ultimate_ttt.winner, "a gagné.")
+            break
+
 
 
 if __name__ == "__main__":
     jouer()
+
