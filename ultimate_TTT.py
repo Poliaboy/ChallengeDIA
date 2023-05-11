@@ -5,7 +5,8 @@ class UltimateTTT:
     def __init__(self, board=None, player="X", state=False, winner=0, last_action=None):
         if board is None:
             self.boardU = [[Tic_Tac_Toe()] * 3 for _ in range(3)]
-        self.boardU = board
+        else:
+            self.boardU = board
         self.player = player
         self.state = state
         self.winner = winner
@@ -55,7 +56,7 @@ class UltimateTTT:
             i, j = divmod(self.next_grid, 3)
             return [(i, j, self.boardU[i][j].possible_actions())]
 
-    # the game should is displayed like this
+    # the game is displayed like this
     # X X X | O X X | X X X
     # X X X | O   O | X X X
     # X X X | X   X | X X X
@@ -68,7 +69,7 @@ class UltimateTTT:
     # X X X | X X X | X X X
     # X X X | X X X | X X X
     def __str__(self):
-        return "\n".join("------+-------+------\n".join(" | ".join(" ".join(self.boardU[i][j].board[k][l] for l in range(3)) for j in range(3)) + "\n" for k in range(3)) for i in range(3))
+        return " ".join("------+-------+------\n".join(" | ".join(" ".join(self.boardU[i][j].__str__()) for j in range(3)) for i in range(3)))
 
 
 

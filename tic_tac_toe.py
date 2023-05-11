@@ -55,11 +55,14 @@ class Tic_Tac_Toe:
     # |   |
     #  ---
     # and display the grid with space between each cell if the grid is not won
-    def __str__(self):
+    def display(self):
         if self.winner == 1:
             return " \ / \n  X  \n / \ \n"
         elif self.winner == -1:
             return " --- \n|   |\n --- \n"
         else:
             return "\n".join(" ".join(cell for cell in row) for row in self.board)
+
+    def __str__(self):
+        return "\n".join(" ".join(cell for cell in row) for row in self.board)
 
