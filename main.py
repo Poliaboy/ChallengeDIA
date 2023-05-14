@@ -1,7 +1,7 @@
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2, Heuristic
+from Agents.Heuristics import heur1, heur2, Heuristic, heuristic_combo, heur_tie_push
 from Structure.UltimateTTT import Game
 
 
@@ -107,10 +107,11 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = MinimaxAgent(3, Heuristic, "X")
-    agent2 = AlphaBetaAgent(6, Heuristic, "O")
+    agent1 = MinimaxAgent(3, heuristic_combo, "X")
+    agent2 = AlphaBetaAgent(6, heuristic_combo, "O")
 
     play_game(game, agent1, agent2)
+    game.display()
 
     # display winner
     if game.winner() == "X":
@@ -119,6 +120,7 @@ def ai_vs_ai():
         print("Player O wins!")
     else:
         print("Tie game.")
+
 
 if __name__ == '__main__':
     print("Choose mode: 1 - AI vs AI, 2 - Human vs AI")
