@@ -24,29 +24,45 @@ def play_game(game, agent1, agent2):
         print(f"Agent2's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
+def human_play(game):
+    print("Enter your move: ")
+    move = tuple(map(int, input().split(" ")))
+    legal_moves = game.get_legal_moves()
+    if move not in legal_moves:
+        print("Illegal move!")
+        while move not in legal_moves:
+            print("Enter your move: ")
+            move = tuple(map(int, input().split(" ")))
+    return move
+
 def play_game_human(game, agent, order):
     while not game.is_terminal():
         if order == 1:
+            print("Ai's turn'")
             move = agent.get_move(game)
             game.make_move(move)
             game.display()
 
             if game.is_terminal():
                 break
-            print("Enter your move: ")
-            move = tuple(map(int, input().split(" ")))
+
+            move = human_play(game)
             game.make_move(move)
+            game.display()
+
+
         else:
-            print("Enter your move: ")
-            move = tuple(map(int, input().split(" ")))
+            move = human_play(game)
             game.make_move(move)
+            game.display()
 
             if game.is_terminal():
                 break
 
+            print("Ai's turn'")
             move = agent.get_move(game)
-            game.display()
             game.make_move(move)
+            game.display()
 
 
 
