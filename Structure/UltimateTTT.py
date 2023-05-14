@@ -9,6 +9,9 @@ class Game:
     def get_small_board(self, x, y):
         return [self.board[x * 3 + i][y * 3 + j] for i in range(3) for j in range(3)]
 
+    def winner(self):
+        return self.check_big_board()
+
     def check_small_board(self, x, y):
         # check if there is a winner in the small board
         small_board = self.get_small_board(x, y)

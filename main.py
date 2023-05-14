@@ -79,9 +79,10 @@ def play_game_human(game, agent, order):
             game.make_move(move)
             game.display()
             print(f"Agent's decision time: {end_time - start_time} seconds.")
+    print("Game over")
 
 
-if __name__ == '__main__':
+def human_vs_ai():
     # Create the game and the agents
     game = Game()
     agent1 = MinimaxAgent(4, Heuristic, "X")
@@ -93,3 +94,36 @@ if __name__ == '__main__':
     order = int(input())
     play_game_human(game, agent2, order)
     game.display()
+
+    # display winner
+    if game.winner == "X":
+        print("Player X wins!")
+    elif game.winner == "O":
+        print("Player O wins!")
+    else:
+        print("Tie game.")
+
+
+def ai_vs_ai():
+    # Create the game and the agents
+    game = Game()
+    agent1 = MinimaxAgent(4, Heuristic, "X")
+    agent2 = AlphaBetaAgent(6, Heuristic, "O")
+
+    play_game(game, agent1, agent2)
+
+    # display winner
+    if game.winner == "X":
+        print("Player X wins!")
+    elif game.winner == "O":
+        print("Player O wins!")
+    else:
+        print("Tie game.")
+
+if __name__ == '__main__':
+    print("Choose mode: 1 - AI vs AI, 2 - Human vs AI")
+    choix = int(input())
+    if choix == 1:
+        ai_vs_ai()
+    else:
+        human_vs_ai()
