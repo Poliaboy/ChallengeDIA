@@ -89,7 +89,7 @@ def human_vs_ai():
 
     # Play the game
     print("Starting game...")
-    print("Who starts? (1 - opponent, 2 - user)")
+    print("Who starts? (1 - AI, 2 - user)")
     order = int(input())
     agent2 = UltimateAgent("X") if order == 1 else UltimateAgent("O")
     play_game_human(game, agent2, order)
