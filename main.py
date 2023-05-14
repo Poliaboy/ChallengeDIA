@@ -24,6 +24,29 @@ def play_game(game, agent1, agent2):
         print(f"Agent2's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
+def play_game_human(game, agent, order):
+    while not game.is_terminal():
+        if order == 1:
+            move = agent.get_move(game)
+            game.make_move(move)
+            game.display()
+
+            if game.is_terminal():
+                break
+            print("Enter your move: ")
+            move = tuple(map(int, input().split(" ")))
+            game.make_move(move)
+        else:
+            print("Enter your move: ")
+            move = tuple(map(int, input().split(" ")))
+            game.make_move(move)
+
+            if game.is_terminal():
+                break
+
+            move = agent.get_move(game)
+            game.display()
+            game.make_move(move)
 
 
 
@@ -35,5 +58,8 @@ if __name__ == '__main__':
     agent2 = AlphaBetaAgent(4, heur2, "O")
 
     # Play the game
-    play_game(game, agent1, agent2)
+    print("Starting game...")
+    print("Who starts? (1 - user, 2 - opponent)")
+    order = int(input())
+    play_game_human(game, agent1, order)
     game.display()
