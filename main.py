@@ -27,7 +27,11 @@ def play_game(game, agent1, agent2):
 
 
 def get_move():
-    big_board_number, small_board_number = tuple(map(int, input().split(" ")))
+    user_input = input()
+    while len (user_input) != 3:
+        print("Invalid input, try again")
+        user_input = input()
+    big_board_number, small_board_number = tuple(map(int, user_input.split(" ")))
     # Convert into X and Y coordinates, X being lines and Y being columns
     move = ((big_board_number - 1) // 3) * 3 + ((small_board_number - 1) // 3), ((big_board_number - 1) % 3) * 3 + (
             (small_board_number - 1) % 3)
@@ -37,9 +41,14 @@ def get_move():
 
 def human_play(game):
     print("Enter your move: (Select a small board first from 1 to 9, then a cell from 1 to 9), eg 1 1")
-    move = get_move()
     legal_moves = game.get_legal_moves()
-    print(legal_moves)
+    if(len(legal_moves)==81):
+        print("You can play anywhere")
+    else:
+        legal_square = legal_moves[0]
+        curentsquare = (legal_square[0]//3)*3 + legal_square[1]//3 + 1
+        print("You can only play in square: ", curentsquare)
+    move = get_move()
     while move not in legal_moves:
         print("Illegal move, try again")
         move = get_move()
@@ -66,9 +75,9 @@ def play_game_human(game, agent, order):
 
 
         else:
-            game.display()
             move = human_play(game)
             game.make_move(move)
+            game.display()
 
             if game.is_terminal():
                 break
