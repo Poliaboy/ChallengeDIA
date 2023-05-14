@@ -37,22 +37,39 @@ def heur2(game, player):
     # Also check for a similar sequence inside a small board
     for i in range(3):
         for j in range(3):
-            if game.big_board[i][j] == player:
-                if ((game.big_board[i][(j + 1) % 3] == player and game.big_board[i][(j + 2) % 3] != otherPlayer) or
-                        (game.big_board[(i + 1) % 3][j] == player and game.big_board[(i + 2) % 3][j] != otherPlayer) or
-                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == player and game.big_board[(i + 2) % 3][
-                            (j + 2) % 3] != otherPlayer) or
-                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == player and
-                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != otherPlayer)):
-                    score += 4
-            elif game.big_board[i][j] == otherPlayer:
-                if ((game.big_board[i][(j + 1) % 3] == otherPlayer and game.big_board[i][(j + 2) % 3] != player) or
-                        (game.big_board[(i + 1) % 3][j] == otherPlayer and game.big_board[(i + 2) % 3][j] != player) or
-                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == otherPlayer and
-                         game.big_board[(i + 2) % 3][
-                             (j + 2) % 3] != player) or
-                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == otherPlayer and
-                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != player)):
-                    score -= 4
+            if ((game.big_board[i][(j + 1) % 3] == player and game.big_board[i][(j + 2) % 3] != otherPlayer) or
+                    (game.big_board[(i + 1) % 3][j] == player and game.big_board[(i + 2) % 3][j] != otherPlayer) or
+                    (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == player and game.big_board[(i + 2) % 3][
+                        (j + 2) % 3] != otherPlayer) or
+                    (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == player and
+                     game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != otherPlayer)):
+                score = score + 4 if game.big_board[i][j] == player else score - 4
 
     return score
+
+
+def heur3(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    def count_opportunities(board, player):
+        lines = [board[i*3:i*3+3] for i in range(3)] + \
+                [board[i::3] for i in range(3)] + \
+                [board[::4], board[2:8:2]]
+        return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines)
+
+    score = 0
+    for i in range(3):
+        for j in range(3):
+            small_board = game.get_small_board(i, j)
+            score += count_opportunities(small_board, player)
+            score -= count_opportunities(small_board, otherPlayer)
+
+    # also consider the big board
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    score += count_opportunities(big_board_flat, player)
+    score -= count_opportunities(big_board_flat, otherPlayer)
+    return score
+
+
+# Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
+def Heuristic(game, player):
+    return heur1(game, player) + 2 * heur2(game, player) + 3 * heur3(game, player)

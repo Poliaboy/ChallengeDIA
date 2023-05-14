@@ -1,7 +1,7 @@
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2
+from Agents.Heuristics import heur1, heur2, Heuristic
 from Structure.UltimateTTT import Game
 
 
@@ -24,22 +24,34 @@ def play_game(game, agent1, agent2):
         print(f"Agent2's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
-def human_play(game):
-    print("Enter your move: ")
-    move = tuple(map(int, input().split(" ")))
-    legal_moves = game.get_legal_moves()
-    if move not in legal_moves:
-        print("Illegal move!")
-        while move not in legal_moves:
-            print("Enter your move: ")
-            move = tuple(map(int, input().split(" ")))
+
+def get_move():
+    big_board_number, small_board_number = tuple(map(int, input().split(" ")))
+    # Convert into X and Y coordinates, X being lines and Y being columns
+    move = ((big_board_number - 1) // 3) * 3 + ((small_board_number - 1) // 3), ((big_board_number - 1) % 3) * 3 + (
+            (small_board_number - 1) % 3)
+
     return move
+
+
+def human_play(game):
+    print("Enter your move: (Select a small board first from 1 to 9, then a cell from 1 to 9), eg 1 1")
+    move = get_move()
+    legal_moves = game.get_legal_moves()
+    print(legal_moves)
+    while move not in legal_moves:
+        print("Illegal move, try again")
+        move = get_move()
+    return move
+
 
 def play_game_human(game, agent, order):
     while not game.is_terminal():
         if order == 1:
             print("Ai's turn'")
+            start_time = time.time()
             move = agent.get_move(game)
+            end_time = time.time()
             game.make_move(move)
             game.display()
 
@@ -49,33 +61,35 @@ def play_game_human(game, agent, order):
             move = human_play(game)
             game.make_move(move)
             game.display()
+            print(f"Agent's decision time: {end_time - start_time} seconds.")
 
 
         else:
+            game.display()
             move = human_play(game)
             game.make_move(move)
-            game.display()
 
             if game.is_terminal():
                 break
 
             print("Ai's turn'")
+            start_time = time.time()
             move = agent.get_move(game)
+            end_time = time.time()
             game.make_move(move)
             game.display()
-
-
+            print(f"Agent's decision time: {end_time - start_time} seconds.")
 
 
 if __name__ == '__main__':
     # Create the game and the agents
     game = Game()
-    agent1 = MinimaxAgent(4, heur1, "X")
-    agent2 = AlphaBetaAgent(4, heur2, "O")
+    agent1 = MinimaxAgent(4, Heuristic, "X")
+    agent2 = AlphaBetaAgent(6, Heuristic, "O")
 
     # Play the game
     print("Starting game...")
-    print("Who starts? (1 - user, 2 - opponent)")
+    print("Who starts? (1 - opponent, 2 - user)")
     order = int(input())
-    play_game_human(game, agent1, order)
+    play_game_human(game, agent2, order)
     game.display()
