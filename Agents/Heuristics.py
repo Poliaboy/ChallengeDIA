@@ -93,6 +93,31 @@ def heur_tie_push(game, player):
     return score
 
 
+def defensive_heur(game, player):
+    # If the player wins the big board, return 10000
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    if game.check_winner(big_board_flat) == player:
+        return 10000
+
+    score = 0
+    # consider the opposite player
+    opposite_player = 'O' if player == 'X' else 'X'
+
+    for i in range(3):
+        for j in range(3):
+            small_board = game.get_small_board(i, j)
+            player_opportunities = count_opportunities(small_board, player)
+            opponent_opportunities = count_opportunities(small_board, opposite_player)
+            # Defensive strategy: prioritize blocking opponent's opportunities over creating own opportunities
+            score += player_opportunities * 5 - opponent_opportunities * 10
+
+    # also consider the big board
+    player_opportunities = count_opportunities(big_board_flat, player)
+    opponent_opportunities = count_opportunities(big_board_flat, opposite_player)
+    score += player_opportunities * 5 - opponent_opportunities * 10
+
+    return score
+
 def heur6(game, player):
     # If the player is one move away from winning, return a very high score
     big_board_flat = [cell for row in game.big_board for cell in row]

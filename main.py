@@ -1,7 +1,7 @@
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2, Heuristic, heuristic_combo, heur_tie_push, aggressive_heur
+from Agents.Heuristics import heur1, heur2, Heuristic, heuristic_combo, heur_tie_push, aggressive_heur, defensive_heur
 from Structure.UltimateTTT import Game
 
 
@@ -107,8 +107,8 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = AlphaBetaAgent(6, heuristic_combo, "X")
-    agent2 = AlphaBetaAgent(6, aggressive_heur, "O")
+    agent1 = AlphaBetaAgent(6, Heu, "X")
+    agent2 = AlphaBetaAgent(5, defensive_heur, "O")
 
     play_game(game, agent1, agent2)
     game.display()
