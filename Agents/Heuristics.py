@@ -1,16 +1,18 @@
-def heur1(game):
-    x_wins = sum(cell == "X" for row in game.big_board for cell in row)
-    o_wins = sum(cell == "O" for row in game.big_board for cell in row)
-    return x_wins - o_wins
+def heur1(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    p1_wins = sum(cell == player for row in game.big_board for cell in row)
+    p2_wins = sum(cell == otherPlayer for row in game.big_board for cell in row)
+    return p1_wins - p2_wins
 
 
-def heur2(game):
+def heur2(game, player):
+    otherPlayer = "O" if player == "X" else "X"
     score = 0
     # Check small board wins, center board wins, corner board wins,
     # center square in any small board and square in the center board
     for i in range(9):
         for j in range(9):
-            if game.board[i][j] == "X":
+            if game.board[i][j] == player:
                 score += 5
                 if i == 4 and j == 4:
                     score += 10
@@ -20,7 +22,7 @@ def heur2(game):
                     score += 3
                 if i == 4 or j == 4:
                     score += 3
-            elif game.board[i][j] == "O":
+            elif game.board[i][j] == otherPlayer:
                 score -= 5
                 if i == 4 and j == 4:
                     score -= 10
@@ -35,21 +37,22 @@ def heur2(game):
     # Also check for a similar sequence inside a small board
     for i in range(3):
         for j in range(3):
-            if game.big_board[i][j] == "X":
-                if ((game.big_board[i][(j + 1) % 3] == "X" and game.big_board[i][(j + 2) % 3] != "O") or
-                        (game.big_board[(i + 1) % 3][j] == "X" and game.big_board[(i + 2) % 3][j] != "O") or
-                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == "X" and game.big_board[(i + 2) % 3][
-                            (j + 2) % 3] != "O") or
-                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == "X" and
-                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != "O")):
+            if game.big_board[i][j] == player:
+                if ((game.big_board[i][(j + 1) % 3] == player and game.big_board[i][(j + 2) % 3] != otherPlayer) or
+                        (game.big_board[(i + 1) % 3][j] == player and game.big_board[(i + 2) % 3][j] != otherPlayer) or
+                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == player and game.big_board[(i + 2) % 3][
+                            (j + 2) % 3] != otherPlayer) or
+                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == player and
+                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != otherPlayer)):
                     score += 4
-            elif game.big_board[i][j] == "O":
-                if ((game.big_board[i][(j + 1) % 3] == "O" and game.big_board[i][(j + 2) % 3] != "X") or
-                        (game.big_board[(i + 1) % 3][j] == "O" and game.big_board[(i + 2) % 3][j] != "X") or
-                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == "O" and game.big_board[(i + 2) % 3][
-                            (j + 2) % 3] != "X") or
-                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == "O" and
-                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != "X")):
+            elif game.big_board[i][j] == otherPlayer:
+                if ((game.big_board[i][(j + 1) % 3] == otherPlayer and game.big_board[i][(j + 2) % 3] != player) or
+                        (game.big_board[(i + 1) % 3][j] == otherPlayer and game.big_board[(i + 2) % 3][j] != player) or
+                        (i == j and game.big_board[(i + 1) % 3][(j + 1) % 3] == otherPlayer and
+                         game.big_board[(i + 2) % 3][
+                             (j + 2) % 3] != player) or
+                        (i + j == 2 and game.big_board[(i + 1) % 3][(2 - j + 1) % 3] == otherPlayer and
+                         game.big_board[(i + 2) % 3][(2 - j + 2) % 3] != player)):
                     score -= 4
 
     return score

@@ -1,7 +1,8 @@
 class MinimaxAgent:
-    def __init__(self, depth, heuristic):
+    def __init__(self, depth, heuristic, player):
         self.depth = depth
         self.heuristic = heuristic
+        self.player = player
 
     def get_move(self, game):
         _, move = self.minimax(game, self.depth, True)
@@ -9,7 +10,7 @@ class MinimaxAgent:
 
     def minimax(self, game, depth, maximizingPlayer):
         if depth == 0 or game.is_terminal():
-            return self.heuristic(game), None
+            return self.heuristic(game, self.player), None
 
         if maximizingPlayer:
             maxEval = float('-inf')
@@ -42,7 +43,7 @@ class AlphaBetaAgent(MinimaxAgent):
 
     def alpha_beta(self, game, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or game.is_terminal():
-            return self.heuristic(game), None
+            return self.heuristic(game, self.player), None
 
         if maximizingPlayer:
             maxEval = float('-inf')

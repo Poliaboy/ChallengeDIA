@@ -31,8 +31,8 @@ def play_game(game, agent1, agent2):
 if __name__ == '__main__':
     # Create the game and the agents
     game = Game()
-    agent1 = AlphaBetaAgent(6, heur1)
-    agent2 = MinimaxAgent(2, heur2)
+    agent1 = MinimaxAgent(4, heur1, "X")
+    agent2 = AlphaBetaAgent(4, heur2, "O")
 
     # Play the game
     play_game(game, agent1, agent2)
