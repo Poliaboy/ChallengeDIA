@@ -120,5 +120,32 @@ def heur6(game, player):
 def Heuristic(game, player):
     return heur1(game, player) + 2 * heur2(game, player) + 3 * heur6(game, player)
 
+
 def heuristic_combo(game, player):
     return heur6(game, player) + heur_tie_push(game, player)
+
+
+def aggressive_heur(game, player):
+    # If the player wins the big board, return 10000
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    if game.check_winner(big_board_flat) == player:
+        return 10000
+
+    score = 0
+    # consider the opposite player
+    opposite_player = 'O' if player == 'X' else 'X'
+
+    for i in range(3):
+        for j in range(3):
+            small_board = game.get_small_board(i, j)
+            player_opportunities = count_opportunities(small_board, player)
+            opponent_opportunities = count_opportunities(small_board, opposite_player)
+            # Aggressive strategy: prioritize creating own opportunities and blocking opponent's opportunities
+            score += player_opportunities * 10 - opponent_opportunities * 5
+
+    # also consider the big board
+    player_opportunities = count_opportunities(big_board_flat, player)
+    opponent_opportunities = count_opportunities(big_board_flat, opposite_player)
+    score += player_opportunities * 10 - opponent_opportunities * 5
+
+    return score

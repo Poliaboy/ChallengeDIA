@@ -1,7 +1,7 @@
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2, Heuristic, heuristic_combo, heur_tie_push
+from Agents.Heuristics import heur1, heur2, Heuristic, heuristic_combo, heur_tie_push, aggressive_heur
 from Structure.UltimateTTT import Game
 
 
@@ -85,13 +85,13 @@ def play_game_human(game, agent, order):
 def human_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = MinimaxAgent(4, Heuristic, "X")
-    agent2 = AlphaBetaAgent(6, Heuristic, "O")
+
 
     # Play the game
     print("Starting game...")
     print("Who starts? (1 - opponent, 2 - user)")
     order = int(input())
+    agent2 = AlphaBetaAgent(6, heuristic_combo, "X") if order == 1 else AlphaBetaAgent(6, heuristic_combo, "O")
     play_game_human(game, agent2, order)
     game.display()
 
@@ -107,8 +107,8 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = MinimaxAgent(3, heuristic_combo, "X")
-    agent2 = AlphaBetaAgent(6, heuristic_combo, "O")
+    agent1 = AlphaBetaAgent(6, heuristic_combo, "X")
+    agent2 = AlphaBetaAgent(6, aggressive_heur, "O")
 
     play_game(game, agent1, agent2)
     game.display()
