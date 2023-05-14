@@ -142,7 +142,7 @@ def heur6(game, player):
 
 
 # Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
-def Heuristic(game, player):
+def attack_heur(game, player):
     return heur1(game, player) + 2 * heur2(game, player) + 3 * heur6(game, player)
 
 
