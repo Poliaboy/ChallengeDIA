@@ -96,9 +96,9 @@ def human_vs_ai():
     game.display()
 
     # display winner
-    if game.winner == "X":
+    if game.winner() == "X":
         print("Player X wins!")
-    elif game.winner == "O":
+    elif game.winner() == "O":
         print("Player O wins!")
     else:
         print("Tie game.")
@@ -107,15 +107,15 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = MinimaxAgent(4, Heuristic, "X")
+    agent1 = MinimaxAgent(3, Heuristic, "X")
     agent2 = AlphaBetaAgent(6, Heuristic, "O")
 
     play_game(game, agent1, agent2)
 
     # display winner
-    if game.winner == "X":
+    if game.winner() == "X":
         print("Player X wins!")
-    elif game.winner == "O":
+    elif game.winner() == "O":
         print("Player O wins!")
     else:
         print("Tie game.")
