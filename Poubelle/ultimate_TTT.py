@@ -1,4 +1,4 @@
-from tic_tac_toe import Tic_Tac_Toe
+from Poubelle.tic_tac_toe import Tic_Tac_Toe
 
 
 class UltimateTTT:
