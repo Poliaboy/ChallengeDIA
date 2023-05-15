@@ -98,15 +98,14 @@ def defensive_heur(game, player):
     for i in range(3):
         for j in range(3):
             small_board = game.get_small_board(i, j)
-            player_opportunities = count_opportunities(small_board, player)
-            opponent_opportunities = count_opportunities(small_board, opposite_player)
-            # Defensive strategy: prioritize blocking opponent's opportunities over creating own opportunities
-            score += player_opportunities * 5 - opponent_opportunities * 10
+            player_opportunities, player_penalty = count_opportunities(small_board, player)
+            score += player_penalty * 5 - player_opportunities * 10
+
 
     # also consider the big board
-    player_opportunities = count_opportunities(big_board_flat, player)
-    opponent_opportunities = count_opportunities(big_board_flat, opposite_player)
-    score += player_opportunities * 5 - opponent_opportunities * 10
+    big_opportunities, big_penalty = count_opportunities(game.big_board, player)
+    score += big_penalty * 10 - big_opportunities * 20
+
 
     return score
 

@@ -1,7 +1,7 @@
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2, attack_heur, heuristic_combo, heur_tie_push, aggressive_heur, defensive_heur
+from Agents.Heuristics import heur1, heur2, attack_heur, defensive_heur
 from Agents.Ultimate_Agent import UltimateAgent
 from Structure.Game import Game
 
