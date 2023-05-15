@@ -120,8 +120,8 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent1 = UltimateAgent("X")
-    agent2 = AlphaBetaAgent(5, attack_heur, "O")
+    agent2 = UltimateAgent("0")
+    agent1 = AlphaBetaAgent(6, heur2, "X")
 
     play_game(game, agent1, agent2)
     game.display()

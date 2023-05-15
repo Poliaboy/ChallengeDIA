@@ -56,6 +56,7 @@ def count_opportunities(board, player):
     return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines), sum(
         line.count(otherPlayer) == 2 and line.count(None) == 1 for line in lines)
 
+
 def heuristic_optimized(game, player):
     otherPlayer = "O" if player == "X" else "X"
     score = 0
@@ -88,6 +89,40 @@ def heuristic_optimized(game, player):
     return score
 
 
+def heuristic_ultimate(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    score = 0
+
+    # Winning Small Boards
+    score += 1000 * sum(cell == player for row in game.big_board for cell in row)
+
+    # Potential to Win Small Boards
+    for i in range(3):
+        for j in range(3):
+            small_board = game.small_boards[i][j]
+            player_opportunities, opponent_opportunities = count_opportunities(small_board, player)
+            score += player_opportunities * 100
+            score -= opponent_opportunities * 150
+
+
+    # Control of Big Board
+    for i in range(3):
+        for j in range(3):
+            small_board = game.small_boards[i][j]
+            score += sum(cell == player for cell in small_board) * 10
+
+    # Center Control
+    center_small_board = game.small_boards[1][1]
+    score += sum(cell == player for cell in center_small_board) * 50
+
+    # Forcing Moves
+    if game.last_move is not None:
+        last_x, last_y = game.last_move
+        next_x, next_y = last_x % 3, last_y % 3
+        if game.big_board[next_x][next_y] is None:
+            score += 100
+
+    return score
 
 def heur3(game, player):
     otherPlayer = "O" if player == "X" else "X"
@@ -117,7 +152,6 @@ def heur3(game, player):
     return score
 
 
-
 def defensive_heur(game, player):
     # If the player wins the big board, return 10000
     big_board_flat = [cell for row in game.big_board for cell in row]
@@ -134,11 +168,9 @@ def defensive_heur(game, player):
             player_opportunities, player_penalty = count_opportunities(small_board, player)
             score += player_penalty * 5 - player_opportunities * 10
 
-
     # also consider the big board
     big_opportunities, big_penalty = count_opportunities(game.big_board, player)
     score += big_penalty * 10 - big_opportunities * 20
-
 
     return score
 
