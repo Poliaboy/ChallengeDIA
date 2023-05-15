@@ -118,4 +118,4 @@ class Game:
                     print('|', end=' ')
             print()  # print new line
             if (i + 1) % 3 == 0 and i != 8:  # separate small boards vertically
-                print('-' * 29)  # print horizontal line
+                print("------+-------+------")  # print horizontal line
