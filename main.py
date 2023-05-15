@@ -13,7 +13,7 @@ def play_game(game, agent1, agent2):
         eval, move = agent1.get_move(game)
         end_time = time.time()
         game.display()
-        print(f"Agent evaluation: {eval}")
+        print(f"Agent1's evaluation: {eval}")
         print(f"Agent1's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
@@ -24,7 +24,7 @@ def play_game(game, agent1, agent2):
         eval, move = agent2.get_move(game)
         end_time = time.time()
         game.display()
-        print(f"Agent evaluation: {eval}")
+        print(f"Agent2's evaluation: {eval}")
         print(f"Agent2's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
@@ -120,8 +120,8 @@ def human_vs_ai():
 def ai_vs_ai():
     # Create the game and the agents
     game = Game()
-    agent2 = UltimateAgent("0")
-    agent1 = AlphaBetaAgent(6, heur2, "X")
+    agent1 = UltimateAgent("X")
+    agent2 = AlphaBetaAgent(6, defensive_heur, "O")
 
     play_game(game, agent1, agent2)
     game.display()

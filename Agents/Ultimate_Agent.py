@@ -4,7 +4,7 @@ from Agents.Heuristics import attack_heur, defensive_heur, heur1, heuristic_ulti
 
 class UltimateAgent():
     def __init__(self, player):
-        self.agentLate = AlphaBetaAgent(5, heuristic_ultimate, player)
+        self.agentLate = AlphaBetaAgent(6, heuristic_ultimate, player)
 
     def get_move(self, game):
         evalLate, moveLate = self.agentLate.get_move(game)

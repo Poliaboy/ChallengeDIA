@@ -93,8 +93,12 @@ def heuristic_ultimate(game, player):
     otherPlayer = "O" if player == "X" else "X"
     score = 0
 
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    if game.check_winner(big_board_flat) == player:
+        return 100000
+
     # Winning Small Boards
-    score += 1000 * sum(cell == player for row in game.big_board for cell in row)
+    score += heur1(game, player)
 
     # Potential to Win Small Boards
     for i in range(3):
@@ -120,9 +124,10 @@ def heuristic_ultimate(game, player):
         last_x, last_y = game.last_move
         next_x, next_y = last_x % 3, last_y % 3
         if game.big_board[next_x][next_y] is None:
-            score += 100
+            score += 200
 
     return score
+
 
 def heur3(game, player):
     otherPlayer = "O" if player == "X" else "X"
