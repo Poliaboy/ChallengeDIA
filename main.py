@@ -1,3 +1,4 @@
+import sys
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
@@ -120,7 +121,7 @@ def ai_vs_ai():
     # Create the game and the agents
     game = Game()
     agent1 = UltimateAgent("X")
-    agent2 = AlphaBetaAgent(6, defensive_heur, "O")
+    agent2 = AlphaBetaAgent(4, attack_heur, "O")
 
     play_game(game, agent1, agent2)
     game.display()

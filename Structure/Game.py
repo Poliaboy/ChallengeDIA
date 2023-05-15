@@ -3,6 +3,8 @@ class Game:
         self.previous_player = None
         self.board = [[None] * 9 for _ in range(9)]
         self.big_board = [[None] * 3 for _ in range(3)]
+        self.small_boards = [[self.get_small_board(i, j) for j in range(3)] for i in range(3)]
+        self.legal_moves = [(i, j) for i in range(9) for j in range(9) if self.board[i][j] is None]
         self.player = "X"
         self.last_move = None
 
@@ -14,7 +16,7 @@ class Game:
 
     def check_small_board(self, x, y):
         # check if there is a winner in the small board
-        small_board = self.get_small_board(x, y)
+        small_board = self.small_boards[x][y]
         winner = self.check_winner(small_board)
         if winner is not None:
             self.big_board[x][y] = winner
@@ -44,14 +46,12 @@ class Game:
 
     def get_legal_moves_small_board(self, x, y):
         # get the list of legal moves in a given small board
-        small_board = self.get_small_board(x, y)
-        legal_moves = [(x * 3 + i // 3, y * 3 + i % 3) for i in range(9) if small_board[i] is None]
-        return legal_moves
+        return [(x * 3 + i // 3, y * 3 + i % 3) for i in range(9) if self.small_boards[x][y][i] is None]
 
     def get_legal_moves(self):
         # get the list of legal moves
         if self.last_move is None:
-            return [(i, j) for i in range(9) for j in range(9) if self.board[i][j] is None]
+            return self.legal_moves
 
         last_x, last_y = self.last_move
         next_x, next_y = last_x % 3, last_y % 3
@@ -59,12 +59,7 @@ class Game:
         if self.big_board[next_x][next_y] is None:
             return self.get_legal_moves_small_board(next_x, next_y)
         else:
-            legal_moves = []
-            for i in range(3):
-                for j in range(3):
-                    if self.big_board[i][j] is None:
-                        legal_moves.extend(self.get_legal_moves_small_board(i, j))
-            return legal_moves
+            return self.legal_moves
 
     def make_move(self, move):
         x, y = move
@@ -73,10 +68,14 @@ class Game:
             self.previous_player = self.player
             self.board[x][y] = self.player
             self.last_move = (x, y)
+            # update small board
+            self.small_boards[x // 3][y // 3] = self.get_small_board(x // 3, y // 3)
             # check if the small board is won
             small_board_winner = self.check_small_board(x // 3, y // 3)
             if small_board_winner is not None:
                 self.big_board[x // 3][y // 3] = small_board_winner
+            # update legal moves
+            self.legal_moves = self.get_legal_moves()
             # switch player
             self.player = "O" if self.player == "X" else "X"
 
@@ -86,12 +85,16 @@ class Game:
         if self.board[x][y] is not None:
             self.board[x][y] = None
             self.last_move = None
+            # update small board
+            self.small_boards[x // 3][y // 3] = self.get_small_board(x // 3, y // 3)
             # switch player back
             self.player = self.previous_player
             self.previous_player = "O" if self.previous_player == "X" else "X"
             # if the small board was won, undo the win
             if self.big_board[x // 3][y // 3] is not None:
                 self.big_board[x // 3][y // 3] = None
+            # update legal moves
+            self.legal_moves = self.get_legal_moves()
 
     def is_terminal(self):
         # check if the game is over
@@ -111,4 +114,3 @@ class Game:
             print()  # print new line
             if (i + 1) % 3 == 0 and i != 8:  # separate small boards vertically
                 print('-' * 29)  # print horizontal line
-

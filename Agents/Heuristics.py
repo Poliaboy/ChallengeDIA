@@ -56,6 +56,41 @@ def count_opportunities(board, player):
     return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines), sum(
         line.count(otherPlayer) == 2 and line.count(None) == 1 for line in lines)
 
+def heuristic_optimized(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    score = 0
+
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    if game.check_winner(big_board_flat) == player:
+        return 100000
+
+    # Get small boards only once
+    small_boards = [[game.get_small_board(i, j) for j in range(3)] for i in range(3)]
+
+    # Count opportunities in small boards
+    for i in range(3):
+        for j in range(3):
+            small_board = small_boards[i][j]
+            player_opportunities, player_penalty = count_opportunities(small_board, player)
+            score += player_opportunities * 100
+            score -= player_penalty * 100
+
+    # Get legal moves only once
+    legal_moves = game.get_legal_moves()
+    for move in legal_moves:
+        game.make_move(move)
+        if game.check_small_board(move[0] // 3, move[1] // 3) == otherPlayer:
+            score -= 100
+        game.undo_move(move)
+
+    # Count opportunities in big board
+    big_opportunities, big_penalty = count_opportunities(game.big_board, player)
+    score += big_opportunities * 1000
+    score -= big_penalty * 1000
+
+    return score
+
+
 
 def heur3(game, player):
     otherPlayer = "O" if player == "X" else "X"
@@ -67,7 +102,7 @@ def heur3(game, player):
 
     for i in range(3):
         for j in range(3):
-            small_board = game.get_small_board(i, j)
+            small_board = game.small_boards[i][j]
             player_opportunities, player_penalty = count_opportunities(small_board, player)
             score += player_opportunities * 100
             score -= player_penalty * 100
@@ -76,13 +111,14 @@ def heur3(game, player):
     score += big_opportunities * 1000
     score -= big_penalty * 1000
 
-    for move in game.get_legal_moves():
+    for move in game.legal_moves:
         game.make_move(move)
         if game.check_small_board(move[0] // 3, move[1] // 3) == otherPlayer:
             score -= 100
         game.undo_move(move)
 
     return score
+
 
 
 def defensive_heur(game, player):
@@ -112,4 +148,4 @@ def defensive_heur(game, player):
 
 # Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
 def attack_heur(game, player):
-    return heur1(game, player) + heur3(game, player)
+    return heur1(game, player) + heuristic_optimized(game, player)

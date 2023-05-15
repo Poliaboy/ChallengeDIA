@@ -48,7 +48,7 @@ class AlphaBetaAgent(MinimaxAgent):
         if maximizingPlayer:
             maxEval = float('-inf')
             best_move = None
-            for move in game.get_legal_moves():
+            for move in game.legal_moves:
                 game.make_move(move)
                 eval, _ = self.alpha_beta(game, depth - 1, alpha, beta, False)
                 game.undo_move(move)
@@ -62,7 +62,7 @@ class AlphaBetaAgent(MinimaxAgent):
         else:
             minEval = float('inf')
             best_move = None
-            for move in game.get_legal_moves():
+            for move in game.legal_moves:
                 game.make_move(move)
                 eval, _ = self.alpha_beta(game, depth - 1, alpha, beta, True)
                 game.undo_move(move)
