@@ -1,5 +1,6 @@
 class Game:
     def __init__(self):
+        self.turn = 0
         self.previous_player = None
         self.board = [[None] * 9 for _ in range(9)]
         self.big_board = [[None] * 3 for _ in range(3)]
@@ -83,6 +84,8 @@ class Game:
             self.legal_moves = self.get_legal_moves()
             # switch player
             self.player = "O" if self.player == "X" else "X"
+            # update turn
+            self.turn += 1
 
     def undo_move(self, move):
         x, y = move
@@ -100,6 +103,8 @@ class Game:
                 self.big_board[x // 3][y // 3] = None
             # update legal moves
             self.legal_moves = self.get_legal_moves()
+            # update turn
+            self.turn -= 1
 
     def is_terminal(self):
         # check if the game is over

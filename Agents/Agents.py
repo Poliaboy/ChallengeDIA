@@ -3,6 +3,7 @@ class MinimaxAgent:
         self.depth = depth
         self.heuristic = heuristic
         self.player = player
+        self.name = "Minimax / Alpha-Beta Agent"
 
     def get_move(self, game):
         _, move = self.minimax(game, self.depth, True)

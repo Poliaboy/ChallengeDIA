@@ -4,6 +4,11 @@ def heur1(game, player):
     p2_wins = sum(cell == otherPlayer for row in game.big_board for cell in row)
     return (p1_wins - p2_wins) * 1000
 
+def heur4(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    p2_wins = sum(cell == otherPlayer for row in game.big_board for cell in row)
+    return p2_wins * 1000
+
 
 def heur2(game, player):
     otherPlayer = "O" if player == "X" else "X"
@@ -90,7 +95,6 @@ def heuristic_optimized(game, player):
 
 
 def heuristic_ultimate(game, player):
-    otherPlayer = "O" if player == "X" else "X"
     score = 0
 
     big_board_flat = [cell for row in game.big_board for cell in row]
@@ -106,8 +110,7 @@ def heuristic_ultimate(game, player):
             small_board = game.small_boards[i][j]
             player_opportunities, opponent_opportunities = count_opportunities(small_board, player)
             score += player_opportunities * 100
-            score -= opponent_opportunities * 150
-
+            score -= opponent_opportunities * 100
 
     # Control of Big Board
     for i in range(3):
@@ -158,28 +161,43 @@ def heur3(game, player):
 
 
 def defensive_heur(game, player):
-    # If the player wins the big board, return 10000
+    score = 0
+
     big_board_flat = [cell for row in game.big_board for cell in row]
     if game.check_winner(big_board_flat) == player:
-        return 10000
+        return 1000
 
-    score = 0
-    # consider the opposite player
-    opposite_player = 'O' if player == 'X' else 'X'
+    # Winning Small Boards
+    score -= heur4(game, player)
 
+    # Potential to Win Small Boards
     for i in range(3):
         for j in range(3):
-            small_board = game.get_small_board(i, j)
-            player_opportunities, player_penalty = count_opportunities(small_board, player)
-            score += player_penalty * 5 - player_opportunities * 10
+            small_board = game.small_boards[i][j]
+            player_opportunities, opponent_opportunities = count_opportunities(small_board, player)
+            score += player_opportunities * 100
+            score -= opponent_opportunities * 100
 
-    # also consider the big board
-    big_opportunities, big_penalty = count_opportunities(game.big_board, player)
-    score += big_penalty * 10 - big_opportunities * 20
+    # Control of Big Board
+    for i in range(3):
+        for j in range(3):
+            small_board = game.small_boards[i][j]
+            score += sum(cell == player for cell in small_board) * 15
+
+    # Center Control
+    center_small_board = game.small_boards[1][1]
+    score += sum(cell == player for cell in center_small_board) * 50
+
+    # Forcing Moves
+    if game.last_move is not None:
+        last_x, last_y = game.last_move
+        next_x, next_y = last_x % 3, last_y % 3
+        if game.big_board[next_x][next_y] is None:
+            score += 200
 
     return score
 
 
-# Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
+
 def attack_heur(game, player):
     return heur1(game, player) + heuristic_optimized(game, player)

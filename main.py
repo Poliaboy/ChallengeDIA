@@ -2,7 +2,7 @@ import sys
 import time
 
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
-from Agents.Heuristics import heur1, heur2, attack_heur, defensive_heur
+from Agents.Heuristics import heur1, heur2, defensive_heur, heuristic_ultimate, heuristic_optimized, attack_heur
 from Agents.Ultimate_Agent import UltimateAgent
 from Structure.Game import Game
 
@@ -68,6 +68,7 @@ def play_game_human(game, agent, order):
             end_time = time.time()
             game.make_move(move)
             game.display()
+            print(f"Agent's decision time: {end_time - start_time} seconds.")
 
             if game.is_terminal():
                 break
@@ -75,8 +76,6 @@ def play_game_human(game, agent, order):
             move = human_play(game)
             game.make_move(move)
             game.display()
-            print(f"Agent's decision time: {end_time - start_time} seconds.")
-
 
         else:
             move = human_play(game)
@@ -118,19 +117,21 @@ def human_vs_ai():
 
 
 def ai_vs_ai():
+    # Switch for the agents, 1 for UltimateAgent first, 2 for AlphaBetaAgent first
+    agent_switch = 2
     # Create the game and the agents
     game = Game()
-    agent1 = UltimateAgent("X")
-    agent2 = AlphaBetaAgent(6, defensive_heur, "O")
+    agent1 = UltimateAgent("X") if agent_switch == 1 else AlphaBetaAgent(5, heur1, "X")
+    agent2 = UltimateAgent("O") if agent_switch == 2 else AlphaBetaAgent(6, defensive_heur, "O")
 
     play_game(game, agent1, agent2)
     game.display()
 
     # display winner
     if game.winner() == "X":
-        print("Player X wins!")
+        print(f"Agent {agent1.name} (X) wins!")
     elif game.winner() == "O":
-        print("Player O wins!")
+        print(f"Agent {agent2.name} (O) wins!")
     else:
         print("Tie game.")
 
