@@ -2,7 +2,7 @@ def heur1(game, player):
     otherPlayer = "O" if player == "X" else "X"
     p1_wins = sum(cell == player for row in game.big_board for cell in row)
     p2_wins = sum(cell == otherPlayer for row in game.big_board for cell in row)
-    return (p1_wins - p2_wins)*1000
+    return (p1_wins - p2_wins) * 1000
 
 
 def heur2(game, player):
@@ -48,30 +48,16 @@ def heur2(game, player):
     return score
 
 
-def heur3(game, player):
-    otherPlayer = "O" if player == "X" else "X"
-
-    score = 0
-    for i in range(3):
-        for j in range(3):
-            small_board = game.get_small_board(i, j)
-            score += count_opportunities(small_board, player)
-            score -= count_opportunities(small_board, otherPlayer)
-
-    # also consider the big board
-    big_board_flat = [cell for row in game.big_board for cell in row]
-    score += count_opportunities(big_board_flat, player)
-    score -= count_opportunities(big_board_flat, otherPlayer)
-    return score
-
-
 def count_opportunities(board, player):
+    otherPlayer = "O" if player == "X" else "X"
     lines = [board[i * 3:i * 3 + 3] for i in range(3)] + \
             [board[i::3] for i in range(3)] + \
             [board[::4], board[2:8:2]]
-    return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines)
+    return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines), sum(
+        line.count(otherPlayer) == 2 and line.count(None) == 1 for line in lines)
 
-def heur8(game, player):
+
+def heur3(game, player):
     otherPlayer = "O" if player == "X" else "X"
     score = 0
 
@@ -82,13 +68,12 @@ def heur8(game, player):
     for i in range(3):
         for j in range(3):
             small_board = game.get_small_board(i, j)
-            score += count_opportunities(small_board, player) * 100
-            score -= count_opportunities(small_board, otherPlayer) * 100
+            player_opportunities, player_penalty = count_opportunities(small_board, player)
+            score += player_opportunities * 100
+            score -= player_penalty * 100
 
-    big_opportunities = count_opportunities(game.big_board, player)
+    big_opportunities, big_penalty = count_opportunities(game.big_board, player)
     score += big_opportunities * 1000
-
-    big_penalty = count_opportunities(game.big_board, otherPlayer)
     score -= big_penalty * 1000
 
     for move in game.get_legal_moves():
@@ -96,28 +81,6 @@ def heur8(game, player):
         if game.check_small_board(move[0] // 3, move[1] // 3) == otherPlayer:
             score -= 100
         game.undo_move(move)
-
-    return score
-
-
-
-def heur_tie_push(game, player):
-    score = 0
-    # consider the opposite player
-    otherPlayer = 'O' if player == 'X' else 'X'
-
-    for i in range(3):
-        for j in range(3):
-            small_board = game.get_small_board(i, j)
-            player_opportunities = count_opportunities(small_board, player)
-            opponent_opportunities = count_opportunities(small_board, otherPlayer)
-            score += abs(player_opportunities - opponent_opportunities)
-
-    # also consider the big board
-    big_board_flat = [cell for row in game.big_board for cell in row]
-    player_opportunities = count_opportunities(big_board_flat, player)
-    opponent_opportunities = count_opportunities(big_board_flat, otherPlayer)
-    score += abs(player_opportunities - opponent_opportunities)
 
     return score
 
@@ -147,59 +110,7 @@ def defensive_heur(game, player):
 
     return score
 
-def heur6(game, player):
-    # If the player is one move away from winning, return a very high score
-    big_board_flat = [cell for row in game.big_board for cell in row]
-    if game.check_winner(big_board_flat) == player:
-        return 10000
-
-    score = 0
-    # consider the opposite player
-    otherPlayer = 'O' if player == 'X' else 'X'
-
-    for i in range(3):
-        for j in range(3):
-            small_board = game.get_small_board(i, j)
-            score += count_opportunities(small_board, player)
-            score -= count_opportunities(small_board, otherPlayer)
-
-    # also consider the big board
-    score += count_opportunities(big_board_flat, player)
-    score -= count_opportunities(big_board_flat, otherPlayer)
-
-    return score
-
 
 # Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
 def attack_heur(game, player):
-    return heur1(game, player) + heur8(game, player)
-
-
-def heuristic_combo(game, player):
-    return heur6(game, player) + heur_tie_push(game, player)
-
-
-def aggressive_heur(game, player):
-    # If the player wins the big board, return 10000
-    big_board_flat = [cell for row in game.big_board for cell in row]
-    if game.check_winner(big_board_flat) == player:
-        return 10000
-
-    score = 0
-    # consider the opposite player
-    opposite_player = 'O' if player == 'X' else 'X'
-
-    for i in range(3):
-        for j in range(3):
-            small_board = game.get_small_board(i, j)
-            player_opportunities = count_opportunities(small_board, player)
-            opponent_opportunities = count_opportunities(small_board, opposite_player)
-            # Aggressive strategy: prioritize creating own opportunities and blocking opponent's opportunities
-            score += player_opportunities * 10 - opponent_opportunities * 5
-
-    # also consider the big board
-    player_opportunities = count_opportunities(big_board_flat, player)
-    opponent_opportunities = count_opportunities(big_board_flat, opposite_player)
-    score += player_opportunities * 10 - opponent_opportunities * 5
-
-    return score
+    return heur1(game, player) + heur3(game, player)
