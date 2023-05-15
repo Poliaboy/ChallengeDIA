@@ -38,8 +38,8 @@ class MinimaxAgent:
 
 class AlphaBetaAgent(MinimaxAgent):
     def get_move(self, game):
-        _, move = self.alpha_beta(game, self.depth, float('-inf'), float('inf'), True)
-        return move
+        return self.alpha_beta(game, self.depth, float('-inf'), float('inf'), True)
+
 
     def alpha_beta(self, game, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or game.is_terminal():

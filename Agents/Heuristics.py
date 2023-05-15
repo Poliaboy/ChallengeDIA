@@ -2,7 +2,7 @@ def heur1(game, player):
     otherPlayer = "O" if player == "X" else "X"
     p1_wins = sum(cell == player for row in game.big_board for cell in row)
     p2_wins = sum(cell == otherPlayer for row in game.big_board for cell in row)
-    return p1_wins - p2_wins
+    return (p1_wins - p2_wins)*1000
 
 
 def heur2(game, player):
@@ -143,7 +143,7 @@ def heur6(game, player):
 
 # Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
 def attack_heur(game, player):
-    return heur1(game, player) + 2 * heur2(game, player) + 3 * heur6(game, player)
+    return 1000 * heur1(game, player)
 
 
 def heuristic_combo(game, player):

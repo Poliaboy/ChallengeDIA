@@ -3,15 +3,16 @@ import time
 from Agents.Agents import AlphaBetaAgent, MinimaxAgent
 from Agents.Heuristics import heur1, heur2, attack_heur, heuristic_combo, heur_tie_push, aggressive_heur, defensive_heur
 from Agents.Ultimate_Agent import UltimateAgent
-from Structure.UltimateTTT import Game
+from Structure.Game import Game
 
 
 def play_game(game, agent1, agent2):
     while not game.is_terminal():
         start_time = time.time()
-        move = agent1.get_move(game)
+        eval, move = agent1.get_move(game)
         end_time = time.time()
         game.display()
+        print(f"Agent evaluation: {eval}")
         print(f"Agent1's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
@@ -19,9 +20,10 @@ def play_game(game, agent1, agent2):
             break
 
         start_time = time.time()
-        move = agent2.get_move(game)
+        eval, move = agent2.get_move(game)
         end_time = time.time()
         game.display()
+        print(f"Agent evaluation: {eval}")
         print(f"Agent2's decision time: {end_time - start_time} seconds.")
         game.make_move(move)
 
@@ -60,7 +62,8 @@ def play_game_human(game, agent, order):
         if order == 1:
             print("Ai's turn'")
             start_time = time.time()
-            move = agent.get_move(game)
+            print(game.get_legal_moves())
+            eval, move = agent.get_move(game)
             end_time = time.time()
             game.make_move(move)
             game.display()
@@ -84,7 +87,7 @@ def play_game_human(game, agent, order):
 
             print("Ai's turn'")
             start_time = time.time()
-            move = agent.get_move(game)
+            eval, move = agent.get_move(game)
             end_time = time.time()
             game.make_move(move)
             game.display()
