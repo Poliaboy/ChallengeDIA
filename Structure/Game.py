@@ -51,7 +51,7 @@ class Game:
     def get_legal_moves(self):
         # get the list of legal moves
         if self.last_move is None:
-            return [(i, j) for i in range(9) for j in range(9) if self.board[i][j] is None]
+            return self.legal_moves
 
         last_x, last_y = self.last_move
         next_x, next_y = last_x % 3, last_y % 3
@@ -59,7 +59,12 @@ class Game:
         if self.big_board[next_x][next_y] is None:
             return self.get_legal_moves_small_board(next_x, next_y)
         else:
-            return self.legal_moves
+            legal_moves = []
+            for i in range(3):
+                for j in range(3):
+                    if self.big_board[i][j] is None:
+                        legal_moves.extend(self.get_legal_moves_small_board(i, j))
+            return legal_moves
 
     def make_move(self, move):
         x, y = move
