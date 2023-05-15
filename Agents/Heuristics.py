@@ -71,6 +71,35 @@ def count_opportunities(board, player):
             [board[::4], board[2:8:2]]
     return sum(line.count(player) == 2 and line.count(None) == 1 for line in lines)
 
+def heur8(game, player):
+    otherPlayer = "O" if player == "X" else "X"
+    score = 0
+
+    big_board_flat = [cell for row in game.big_board for cell in row]
+    if game.check_winner(big_board_flat) == player:
+        return 100000
+
+    for i in range(3):
+        for j in range(3):
+            small_board = game.get_small_board(i, j)
+            score += count_opportunities(small_board, player) * 100
+            score -= count_opportunities(small_board, otherPlayer) * 100
+
+    big_opportunities = count_opportunities(game.big_board, player)
+    score += big_opportunities * 1000
+
+    big_penalty = count_opportunities(game.big_board, otherPlayer)
+    score -= big_penalty * 1000
+
+    for move in game.get_legal_moves():
+        game.make_move(move)
+        if game.check_small_board(move[0] // 3, move[1] // 3) == otherPlayer:
+            score -= 100
+        game.undo_move(move)
+
+    return score
+
+
 
 def heur_tie_push(game, player):
     score = 0
@@ -143,7 +172,7 @@ def heur6(game, player):
 
 # Heuristic than combines heur1, heur2 and heur3, with weights 1, 2 and 3 respectively
 def attack_heur(game, player):
-    return 1000 * heur1(game, player)
+    return heur1(game, player) + heur8(game, player)
 
 
 def heuristic_combo(game, player):
