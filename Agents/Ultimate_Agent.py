@@ -1,12 +1,13 @@
 from Agents.Agents import AlphaBetaAgent
-from Agents.Heuristics import attack_heur, defensive_heur
+from Agents.Heuristics import attack_heur, defensive_heur, heur1
 
 
-class UltimateAgent(AlphaBetaAgent):
+class UltimateAgent():
     def __init__(self, player):
-        if player == "X":
-            heuristic = attack_heur
-        else:
-            heuristic = defensive_heur
+        self.agentLate = AlphaBetaAgent(5, heur1, player)
 
-        super().__init__(6, heuristic, player)
+    def get_move(self, game):
+        evalLate, moveLate = self.agentLate.get_move(game)
+        print("Late: ", evalLate, moveLate)
+
+        return evalLate, moveLate
