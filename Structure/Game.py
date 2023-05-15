@@ -51,7 +51,7 @@ class Game:
     def get_legal_moves(self):
         # get the list of legal moves
         if self.last_move is None:
-            return self.legal_moves
+            return [(i, j) for i in range(9) for j in range(9) if self.board[i][j] is None]
 
         last_x, last_y = self.last_move
         next_x, next_y = last_x % 3, last_y % 3
