@@ -64,19 +64,16 @@ def heuristic_optimized(game, player):
     if game.check_winner(big_board_flat) == player:
         return 100000
 
-    # Get small boards only once
-    small_boards = [[game.get_small_board(i, j) for j in range(3)] for i in range(3)]
-
     # Count opportunities in small boards
     for i in range(3):
         for j in range(3):
-            small_board = small_boards[i][j]
+            small_board = game.small_boards[i][j]
             player_opportunities, player_penalty = count_opportunities(small_board, player)
             score += player_opportunities * 100
             score -= player_penalty * 100
 
     # Get legal moves only once
-    legal_moves = game.get_legal_moves()
+    legal_moves = game.legal_moves
     for move in legal_moves:
         game.make_move(move)
         if game.check_small_board(move[0] // 3, move[1] // 3) == otherPlayer:
